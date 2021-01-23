@@ -40,13 +40,12 @@
 #include <mapchooser_extended>
 #include <multicolors>
 #include <basecomm>
-#include <SteamWorks>
 
 #define MCE_VERSION "1.14.0"
 
 public Plugin myinfo =
 {
-	name = "Map Nominations Extended with Restriction",
+	name = "Map Nominations Extended with Admin and VIP Map",
 	author = "Powerlord, Oylsister and AlliedModders LLC",
 	description = "Provides Map Nominations",
 	version = MCE_VERSION,
@@ -62,9 +61,6 @@ Menu g_MapMenu;
 Menu g_AdminMapMenu;
 int g_mapFileSerial = -1;
 int g_AdminMapFileSerial = -1;
-int iGroupID;
-
-bool b_InGroup[MAXPLAYERS+1];
 
 #define LoopAllPlayers(%1) for(int %1=1;%1<=MaxClients;++%1)\
 if(IsClientInGame(%1) && !IsFakeClient(%1))
@@ -120,41 +116,6 @@ public void OnPluginStart()
 
 	g_mapTrie = CreateTrie();
 	AutoExecConfig();
-}
-
-public void OnMapStart()
-{
-	iGroupID = GetConVarInt(g_Cvar_SteamGroupID);
-}
-
-public void OnClientPutInServer(int client)
-{
-	b_InGroup[client] = false;
-	SteamWorks_GetUserGroupStatus(client, iGroupID);
-}
-
-public int SteamWorks_OnClientGroupStatus(int authid, int groupid, bool isMember, bool isOfficer)
-{
-	int client = GetUserFromAuthID(authid);
-	
-	if(isMember)
-		b_InGroup[client] = true;	
-}
-
-int GetUserFromAuthID(int authid)
-{
-	LoopAllPlayers(i)
-	{
-		char authstring[50];
-		GetClientAuthId(i, AuthId_Steam3, authstring, sizeof(authstring));	
-		
-		char authstring2[50];
-		IntToString(authid, authstring2, sizeof(authstring2));
-		
-		if(StrContains(authstring, authstring2) != -1)
-			return i;
-	}
-	return -1;
 }
 
 public APLRes AskPluginLoad2(Handle hThis, bool bLate, char[] err, int iErrLen)
@@ -482,13 +443,7 @@ public Action Command_Say(int client, int args)
 
 	if(strcmp(text[startidx], "nominate", false) == 0)
 	{
-		if(!b_InGroup[client])
-		{
-			CPrintToChat(client, "\x02[ɌAŽΣ]\x01 Join ɌAŽΣ Steam Group to access map nomination!");
-			return Plugin_Handled;
-		}
-
-		if(IsNominateAllowed(client) && b_InGroup[client])
+		if(IsNominateAllowed(client))
 		{
 			if(g_NominationDelay > GetTime())
 				CReplyToCommand(client, "\x04[NE]\x01 Nominations will be unlocked in %d seconds", g_NominationDelay - GetTime());
@@ -513,15 +468,9 @@ public Action Command_Nominate(int client, int args)
 		return Plugin_Handled;
 	}
 
-	if(args == 0 && b_InGroup[client])
+	if(args == 0)
 	{
 		AttemptNominate(client);
-		return Plugin_Handled;
-	}
-	
-	if(args == 0 && !b_InGroup[client])
-	{
-		CPrintToChat(client, "\x02[ɌAŽΣ]\x01 Join ɌAŽΣ Steam Group to access map nomination!");
 		return Plugin_Handled;
 	}
 
@@ -971,13 +920,13 @@ stock bool IsNominateAllowed(int client)
 			CReplyToCommand(client, "\x04[NE]\x01 %t", "Next Map", map);
 			return false;
 		}
-/*
+
 		case CanNominate_No_VoteFull:
 		{
 			CReplyToCommand(client, "\x04[NE]\x01 %t", "Max Nominations");
 			return false;
 		}
-*/
+
 	}
 
 	return true;

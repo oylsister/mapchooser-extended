@@ -118,7 +118,7 @@ native int GetMapNominateOnly(const char[] map);
 
 stock bool IsClientVIP(int client)
 {
-    	return CheckCommandAccess(client, "sm_settag", ADMFLAG_CUSTOM1, false);
+    	return CheckCommandAccess(client, "sm_vip", ADMFLAG_RESERVATION, false);
 }
 
 stock bool IsClientAdmin(int client)
