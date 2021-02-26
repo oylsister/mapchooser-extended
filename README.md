@@ -8,7 +8,7 @@ Original: https://gogs.botox.bz/CSSZombieEscape/sm-plugins/src/master/mapchooser
 - Nominate Map only (Not appear on the vote without nominations)
 
 ### Existed
-- Map group
+- Map group (This is not group cooldown, but to prevent nominate a map from the same group)
 - Cooldown based on cooldown.cfg (no reset cooldown)
 
 ## Credits to 
