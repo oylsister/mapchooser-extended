@@ -761,13 +761,13 @@ public int Handler_MapSelectMenu(Menu menu, MenuAction action, int param1, int p
 				return ITEMDRAW_DEFAULT;
 			}
 
-			if((status & MAPSTATUS_DISABLED) == MAPSTATUS_DISABLED)
+			if(((status & MAPSTATUS_DISABLED) == MAPSTATUS_DISABLED) && !IsClientAdmin(param1))
 				return ITEMDRAW_DISABLED;
 
-			if(GetMapTimeRestriction(map) || GetMapPlayerRestriction(map) || GetMapGroupRestriction(map, param1) >= 0)
+			if((GetMapTimeRestriction(map) || GetMapPlayerRestriction(map) || GetMapGroupRestriction(map, param1) >= 0) && !IsClientAdmin(param1))
 				return ITEMDRAW_DISABLED;
 
-			if(GetMapVIPOnly(map) && !IsClientVIP(param1))
+			if(GetMapVIPOnly(map) && (!IsClientVIP(param1) || !IsClientAdmin(param1)))
 				return ITEMDRAW_DISABLED;
 
 			if(GetMapAdminOnly(map) && !IsClientAdmin(param1))
@@ -837,15 +837,54 @@ public int Handler_MapSelectMenu(Menu menu, MenuAction action, int param1, int p
 					return RedrawMenuItem(display);
 				}
 			}
+			int TimeRestriction = GetMapTimeRestriction(map);
+			int PlayerRestriction = GetMapPlayerRestriction(map);
+			int GroupRestriction = GetMapGroupRestriction(map, param1);
 			
 			if(GetMapVIPOnly(map) && IsClientVIP(param1))
 			{
+				if (TimeRestriction)
+				{
+					Format(display, sizeof(display), "%s (%T)(★VIP★)", buffer, "Map Time Restriction", param1, "+", RoundToFloor(float(TimeRestriction / 60)), TimeRestriction % 60);
+					return RedrawMenuItem(display);
+				}
+				if (PlayerRestriction)
+				{
+					if(PlayerRestriction < 0)
+						Format(display, sizeof(display), "%s (%T)(★VIP★)", buffer, "Map Player Restriction", param1, "+", PlayerRestriction * -1);
+					else
+						Format(display, sizeof(display), "%s (%T)(★VIP★)", buffer, "Map Player Restriction", param1, "-", PlayerRestriction);
+				}
+				if(GroupRestriction >= 0)
+				{
+					Format(display, sizeof(display), "%s (%T)(★VIP★)", buffer, "Map Group Restriction", param1, GroupRestriction);
+					return RedrawMenuItem(display);
+				}
+				
 				Format(display, sizeof(display), "%s (★VIP★)", buffer);
 				return RedrawMenuItem(display);
 			}
 
 			if(GetMapVIPOnly(map) && !IsClientVIP(param1))
 			{
+				if (TimeRestriction)
+				{
+					Format(display, sizeof(display), "%s (%T)(★VIP★)", buffer, "Map Time Restriction", param1, "+", RoundToFloor(float(TimeRestriction / 60)), TimeRestriction % 60);
+					return RedrawMenuItem(display);
+				}
+				if (PlayerRestriction)
+				{
+					if(PlayerRestriction < 0)
+						Format(display, sizeof(display), "%s (%T)(★VIP★)", buffer, "Map Player Restriction", param1, "+", PlayerRestriction * -1);
+					else
+						Format(display, sizeof(display), "%s (%T)(★VIP★)", buffer, "Map Player Restriction", param1, "-", PlayerRestriction);
+				}
+				if(GroupRestriction >= 0)
+				{
+					Format(display, sizeof(display), "%s (%T)(★VIP★)", buffer, "Map Group Restriction", param1, GroupRestriction);
+					return RedrawMenuItem(display);
+				}
+				
 				Format(display, sizeof(display), "%s (VIP Only)", buffer);
 				return RedrawMenuItem(display);
 			}
@@ -858,11 +897,28 @@ public int Handler_MapSelectMenu(Menu menu, MenuAction action, int param1, int p
 
 			if(GetMapAdminOnly(map) && !IsClientAdmin(param1))
 			{
+				if (TimeRestriction)
+				{
+					Format(display, sizeof(display), "%s (%T)(★Admin★)", buffer, "Map Time Restriction", param1, "+", RoundToFloor(float(TimeRestriction / 60)), TimeRestriction % 60);
+					return RedrawMenuItem(display);
+				}
+				if (PlayerRestriction)
+				{
+					if(PlayerRestriction < 0)
+						Format(display, sizeof(display), "%s (%T)(★Admin★)", buffer, "Map Player Restriction", param1, "+", PlayerRestriction * -1);
+					else
+						Format(display, sizeof(display), "%s (%T)(★Admin★)", buffer, "Map Player Restriction", param1, "-", PlayerRestriction);
+				}
+				if(GroupRestriction >= 0)
+				{
+					Format(display, sizeof(display), "%s (%T)(★Admin★)", buffer, "Map Group Restriction", param1, GroupRestriction);
+					return RedrawMenuItem(display);
+				}
+				
 				Format(display, sizeof(display), "%s (Admin Only)", buffer);
 				return RedrawMenuItem(display);
 			}
 
-			int TimeRestriction = GetMapTimeRestriction(map);
 			if(TimeRestriction)
 			{
 				Format(display, sizeof(display), "%s (%T)", buffer, "Map Time Restriction", param1, "+", RoundToFloor(float(TimeRestriction / 60)), TimeRestriction % 60);
@@ -870,7 +926,6 @@ public int Handler_MapSelectMenu(Menu menu, MenuAction action, int param1, int p
 				return RedrawMenuItem(display);
 			}
 
-			int PlayerRestriction = GetMapPlayerRestriction(map);
 			if(PlayerRestriction)
 			{
 				if(PlayerRestriction < 0)
@@ -881,7 +936,6 @@ public int Handler_MapSelectMenu(Menu menu, MenuAction action, int param1, int p
 				return RedrawMenuItem(display);
 			}
 
-			int GroupRestriction = GetMapGroupRestriction(map, param1);
 			if(GroupRestriction >= 0)
 			{
 				Format(display, sizeof(display), "%s (%T)", buffer, "Map Group Restriction", param1, GroupRestriction);
