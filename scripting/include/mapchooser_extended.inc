@@ -122,7 +122,7 @@ stock bool IsClientVIP(int client)
 	Format(sClientFlag, sizeof(sClientFlag), "a");
 	
 	int flag = ReadFlagString(sClientFlag);
-	if (GetUserFlagBits(client) & flag == flag);
+	if (GetUserFlagBits(client) & flag == flag)
 	{
 		return true;
 	}
