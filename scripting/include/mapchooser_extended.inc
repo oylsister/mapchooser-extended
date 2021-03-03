@@ -123,7 +123,6 @@ stock bool IsClientVIP(int client)
 	
 	int flag = ReadFlagString(sClientFlag);
     	return (GetUserFlagBits(client) & flag == flag);
-    	return CheckCommandAccess(client, "sm_vip", ADMFLAG_RESERVATION, false);
 }
 
 stock bool IsClientAdmin(int client)
