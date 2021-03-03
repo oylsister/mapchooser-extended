@@ -118,12 +118,17 @@ native int GetMapNominateOnly(const char[] map);
 
 stock bool IsClientVIP(int client)
 {
+	char sClientFlag[16];
+	Format(sClientFlag, sizeof(sClientFlag), "a");
+	
+	int flag = ReadFlagString(sClientFlag);
+    	return (GetUserFlagBits(client) & flag == flag);
     	return CheckCommandAccess(client, "sm_vip", ADMFLAG_RESERVATION, false);
 }
 
 stock bool IsClientAdmin(int client)
 {
-    	return CheckCommandAccess(client, "sm_map", ADMFLAG_CHANGEMAP, false);
+	return CheckCommandAccess(client, "sm_map", ADMFLAG_CHANGEMAP, false);
 }
 
 // 0 = Okay
