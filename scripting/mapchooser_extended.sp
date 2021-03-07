@@ -414,6 +414,7 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 	CreateNative("GetMapAdminOnly", Native_GetMapAdminOnly);
 	CreateNative("GetMapVIPOnly", Native_GetMapVIPOnly);
 	CreateNative("GetMapNominateOnly", Native_GetMapNominateOnly);
+	CreateNative("GetMapIsNew", Native_GetMapIsNew);
 
 	return APLRes_Success;
 }
@@ -2737,6 +2738,20 @@ public int Native_GetMapNominateOnly(Handle plugin, int numParams)
 	return InternalGetMapNominateOnly(map);
 }
 
+public int Native_GetMapIsNew(Handle plugin, int numParams)
+{
+	int len;
+	GetNativeStringLength(1, len);
+
+	if(len <= 0)
+		return false;
+
+	char[] map = new char[len+1];
+	GetNativeString(1, map, len+1);
+
+	return InternalGetMapIsNew(map);	
+}
+
 stock int InternalGetMapAdminOnly(const char[] map)
 {
 	int AdminOnly = 0;
@@ -2774,4 +2789,18 @@ stock int InternalGetMapNominateOnly(const char[] map)
 	}
 
 	return NominateOnly;
+}
+
+stock bool InternalGetMapIsNew(const char[] map)
+{
+	if(g_Config && g_Config.JumpToKey(map))
+	{
+		int iNumber = g_Config.GetNum("NewMap", 1);
+
+		if(iNumber == 1)
+			return true;
+
+		g_Config.Rewind();
+	}
+	return false;
 }

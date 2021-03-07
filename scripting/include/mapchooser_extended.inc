@@ -115,6 +115,7 @@ native int GetMapMaxPlayers(const char[] map);
 native int GetMapAdminOnly(const char[] map);
 native int GetMapVIPOnly(const char[] map);
 native int GetMapNominateOnly(const char[] map);
+native bool GetMapIsNew(const char[] map);
 
 stock bool IsClientVIP(int client)
 {
@@ -122,7 +123,7 @@ stock bool IsClientVIP(int client)
 	Format(sClientFlag, sizeof(sClientFlag), "a");
 	
 	int flag = ReadFlagString(sClientFlag);
-	if (GetUserFlagBits(client) & flag == flag);
+	if (GetUserFlagBits(client) & flag == flag)
 	{
 		return true;
 	}
