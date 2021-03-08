@@ -2393,6 +2393,8 @@ void CheckMapRestrictions(bool time = false, bool players = false)
 			continue;
 
 		bool remove;
+		bool IsAdminMap = view_as<bool>(InternalGetMapAdminOnly);
+		
 		GetArrayString(g_NominateList, i, map, PLATFORM_MAX_PATH);
 
 		if (time)
@@ -2400,9 +2402,17 @@ void CheckMapRestrictions(bool time = false, bool players = false)
 			int TimeRestriction = InternalGetMapTimeRestriction(map);
 			if(TimeRestriction)
 			{
-				remove = true;
+				if(IsAdminMap)
+				{
+					remove = false;
+				}
+				
+				else
+				{
+					remove = true;
 
-				CPrintToChat(client, "\x04[MCE]\x01 %t", "Nomination Removed Time Error", map);
+					CPrintToChat(client, "\x04[MCE]\x01 %t", "Nomination Removed Time Error", map);
+				}
 			}
 		}
 
@@ -2411,12 +2421,20 @@ void CheckMapRestrictions(bool time = false, bool players = false)
 			int PlayerRestriction = InternalGetMapPlayerRestriction(map);
 			if(PlayerRestriction)
 			{
-				remove = true;
-
-				if(PlayerRestriction < 0)
-					CPrintToChat(client, "\x04[MCE]\x01 %t", "Nomination Removed MinPlayers Error", map);
+				if(IsAdminMap)
+				{
+					remove = false;
+				}
+				
 				else
-					CPrintToChat(client, "\x04[MCE]\x01 %t", "Nomination Removed MaxPlayers Error", map);
+				{
+					remove = true;
+
+					if(PlayerRestriction < 0)
+						CPrintToChat(client, "\x04[MCE]\x01 %t", "Nomination Removed MinPlayers Error", map);
+					else
+						CPrintToChat(client, "\x04[MCE]\x01 %t", "Nomination Removed MaxPlayers Error", map);
+				}
 			}
 		}
 
