@@ -414,7 +414,6 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 	CreateNative("GetMapAdminOnly", Native_GetMapAdminOnly);
 	CreateNative("GetMapVIPOnly", Native_GetMapVIPOnly);
 	CreateNative("GetMapNominateOnly", Native_GetMapNominateOnly);
-	CreateNative("GetMapIsNew", Native_GetMapIsNew);
 
 	return APLRes_Success;
 }
@@ -2393,8 +2392,6 @@ void CheckMapRestrictions(bool time = false, bool players = false)
 			continue;
 
 		bool remove;
-		bool IsAdminMap = view_as<bool>(InternalGetMapAdminOnly);
-		
 		GetArrayString(g_NominateList, i, map, PLATFORM_MAX_PATH);
 
 		if (time)
@@ -2402,17 +2399,9 @@ void CheckMapRestrictions(bool time = false, bool players = false)
 			int TimeRestriction = InternalGetMapTimeRestriction(map);
 			if(TimeRestriction)
 			{
-				if(IsAdminMap)
-				{
-					remove = false;
-				}
-				
-				else
-				{
-					remove = true;
+				remove = true;
 
-					CPrintToChat(client, "\x04[MCE]\x01 %t", "Nomination Removed Time Error", map);
-				}
+				CPrintToChat(client, "\x04[MCE]\x01 %t", "Nomination Removed Time Error", map);
 			}
 		}
 
@@ -2421,20 +2410,12 @@ void CheckMapRestrictions(bool time = false, bool players = false)
 			int PlayerRestriction = InternalGetMapPlayerRestriction(map);
 			if(PlayerRestriction)
 			{
-				if(IsAdminMap)
-				{
-					remove = false;
-				}
-				
-				else
-				{
-					remove = true;
+				remove = true;
 
-					if(PlayerRestriction < 0)
-						CPrintToChat(client, "\x04[MCE]\x01 %t", "Nomination Removed MinPlayers Error", map);
-					else
-						CPrintToChat(client, "\x04[MCE]\x01 %t", "Nomination Removed MaxPlayers Error", map);
-				}
+				if(PlayerRestriction < 0)
+					CPrintToChat(client, "\x04[MCE]\x01 %t", "Nomination Removed MinPlayers Error", map);
+				else
+					CPrintToChat(client, "\x04[MCE]\x01 %t", "Nomination Removed MaxPlayers Error", map);
 			}
 		}
 
@@ -2756,20 +2737,6 @@ public int Native_GetMapNominateOnly(Handle plugin, int numParams)
 	return InternalGetMapNominateOnly(map);
 }
 
-public int Native_GetMapIsNew(Handle plugin, int numParams)
-{
-	int len;
-	GetNativeStringLength(1, len);
-
-	if(len <= 0)
-		return false;
-
-	char[] map = new char[len+1];
-	GetNativeString(1, map, len+1);
-
-	return InternalGetMapIsNew(map);	
-}
-
 stock int InternalGetMapAdminOnly(const char[] map)
 {
 	int AdminOnly = 0;
@@ -2807,18 +2774,4 @@ stock int InternalGetMapNominateOnly(const char[] map)
 	}
 
 	return NominateOnly;
-}
-
-stock bool InternalGetMapIsNew(const char[] map)
-{
-	if(g_Config && g_Config.JumpToKey(map))
-	{
-		int iNumber = g_Config.GetNum("NewMap", -1);
-
-		if(iNumber == 1)
-			return true;
-
-		g_Config.Rewind();
-	}
-	return false;
 }

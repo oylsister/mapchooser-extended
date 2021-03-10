@@ -115,7 +115,6 @@ native int GetMapMaxPlayers(const char[] map);
 native int GetMapAdminOnly(const char[] map);
 native int GetMapVIPOnly(const char[] map);
 native int GetMapNominateOnly(const char[] map);
-native bool GetMapIsNew(const char[] map);
 
 stock bool IsClientVIP(int client)
 {

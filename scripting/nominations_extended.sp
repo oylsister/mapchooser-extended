@@ -840,7 +840,6 @@ public int Handler_MapSelectMenu(Menu menu, MenuAction action, int param1, int p
 			int TimeRestriction = GetMapTimeRestriction(map);
 			int PlayerRestriction = GetMapPlayerRestriction(map);
 			int GroupRestriction = GetMapGroupRestriction(map, param1);
-			bool IsNewMap = GetMapIsNew(map);
 			
 			if(GetMapVIPOnly(map) && IsClientVIP(param1))
 			{
@@ -859,11 +858,6 @@ public int Handler_MapSelectMenu(Menu menu, MenuAction action, int param1, int p
 				if(GroupRestriction >= 0)
 				{
 					Format(display, sizeof(display), "%s (%T)(★VIP★)", buffer, "Map Group Restriction", param1, GroupRestriction);
-					return RedrawMenuItem(display);
-				}
-				if (IsNewMap)
-				{
-					Format(display, sizeof(display), "*NEW* %s (★VIP★)", buffer);
 					return RedrawMenuItem(display);
 				}
 				
@@ -890,13 +884,8 @@ public int Handler_MapSelectMenu(Menu menu, MenuAction action, int param1, int p
 					Format(display, sizeof(display), "%s (%T)(★VIP★)", buffer, "Map Group Restriction", param1, GroupRestriction);
 					return RedrawMenuItem(display);
 				}
-				if (IsNewMap)
-				{
-					Format(display, sizeof(display), "*NEW* %s (★VIP★)", buffer);
-					return RedrawMenuItem(display);
-				}
 				
-				Format(display, sizeof(display), "%s (★VIP★)", buffer);
+				Format(display, sizeof(display), "%s (VIP Only)", buffer);
 				return RedrawMenuItem(display);
 			}
 
@@ -925,13 +914,8 @@ public int Handler_MapSelectMenu(Menu menu, MenuAction action, int param1, int p
 					Format(display, sizeof(display), "%s (%T)(★Admin★)", buffer, "Map Group Restriction", param1, GroupRestriction);
 					return RedrawMenuItem(display);
 				}
-				if (IsNewMap)
-				{
-					Format(display, sizeof(display), "*NEW* %s (★Admin★)", buffer);
-					return RedrawMenuItem(display);
-				}
 				
-				Format(display, sizeof(display), "%s (★Admin★)", buffer);
+				Format(display, sizeof(display), "%s (Admin Only)", buffer);
 				return RedrawMenuItem(display);
 			}
 
@@ -955,12 +939,6 @@ public int Handler_MapSelectMenu(Menu menu, MenuAction action, int param1, int p
 			if((GroupRestriction >= 0) && !IsClientAdmin(param1))
 			{
 				Format(display, sizeof(display), "%s (%T)", buffer, "Map Group Restriction", param1, GroupRestriction);
-				return RedrawMenuItem(display);
-			}
-			
-			if (IsNewMap)
-			{
-				Format(display, sizeof(display), "*NEW* %s", buffer);
 				return RedrawMenuItem(display);
 			}
 
