@@ -863,7 +863,7 @@ public int Handler_MapSelectMenu(Menu menu, MenuAction action, int param1, int p
 				}
 				if (IsNewMap)
 				{
-					Format(display, sizeof(display), "NEW %s (★VIP★)", buffer);
+					Format(display, sizeof(display), "*NEW* %s (★VIP★)", buffer);
 					return RedrawMenuItem(display);
 				}
 				
@@ -892,7 +892,7 @@ public int Handler_MapSelectMenu(Menu menu, MenuAction action, int param1, int p
 				}
 				if (IsNewMap)
 				{
-					Format(display, sizeof(display), "NEW %s (★VIP★)", buffer);
+					Format(display, sizeof(display), "*NEW* %s (★VIP★)", buffer);
 					return RedrawMenuItem(display);
 				}
 				
@@ -927,7 +927,7 @@ public int Handler_MapSelectMenu(Menu menu, MenuAction action, int param1, int p
 				}
 				if (IsNewMap)
 				{
-					Format(display, sizeof(display), "NEW %s (★Admin★)", buffer);
+					Format(display, sizeof(display), "*NEW* %s (★Admin★)", buffer);
 					return RedrawMenuItem(display);
 				}
 				
@@ -960,7 +960,7 @@ public int Handler_MapSelectMenu(Menu menu, MenuAction action, int param1, int p
 			
 			if (IsNewMap)
 			{
-				Format(display, sizeof(display), "NEW %s", buffer);
+				Format(display, sizeof(display), "*NEW* %s", buffer);
 				return RedrawMenuItem(display);
 			}
 
