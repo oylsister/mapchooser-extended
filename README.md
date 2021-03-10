@@ -6,7 +6,6 @@ Original: https://gogs.botox.bz/CSSZombieEscape/sm-plugins/src/master/mapchooser
 ### New
 - Admin or VIP Map only
 - Nominate Map only (Not appear on the vote without nominations)
-- New Map Tag
 
 ### Existed
 - Map group (This is not group cooldown, but to prevent nominate a map from the same group)
