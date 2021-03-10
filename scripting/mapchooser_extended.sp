@@ -2813,7 +2813,7 @@ stock bool InternalGetMapIsNew(const char[] map)
 {
 	if(g_Config && g_Config.JumpToKey(map))
 	{
-		int iNumber = g_Config.GetNum("NewMap", 1);
+		int iNumber = g_Config.GetNum("NewMap", -1);
 
 		if(iNumber == 1)
 			return true;
