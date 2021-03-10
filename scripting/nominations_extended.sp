@@ -886,14 +886,14 @@ public int Handler_MapSelectMenu(Menu menu, MenuAction action, int param1, int p
 				return RedrawMenuItem(display);
 			}
 
-			if(TimeRestriction && !IsClientAdmin(param1))
+			if(TimeRestriction)
 			{
 				Format(display, sizeof(display), "%s (%T)", buffer, "Map Time Restriction", param1, "+", RoundToFloor(float(TimeRestriction / 60)), TimeRestriction % 60);
 
 				return RedrawMenuItem(display);
 			}
 
-			if(PlayerRestriction && !IsClientAdmin(param1))
+			if(PlayerRestriction)
 			{
 				if(PlayerRestriction < 0)
 					Format(display, sizeof(display), "%s (%T)", buffer, "Map Player Restriction", param1, "+", PlayerRestriction * -1);
@@ -903,7 +903,7 @@ public int Handler_MapSelectMenu(Menu menu, MenuAction action, int param1, int p
 				return RedrawMenuItem(display);
 			}
 
-			if((GroupRestriction >= 0) && !IsClientAdmin(param1))
+			if(GroupRestriction >= 0)
 			{
 				Format(display, sizeof(display), "%s (%T)", buffer, "Map Group Restriction", param1, GroupRestriction);
 				return RedrawMenuItem(display);
