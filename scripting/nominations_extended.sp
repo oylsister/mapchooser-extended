@@ -81,8 +81,6 @@ Handle g_Cvar_InitialDelay = INVALID_HANDLE;
 int g_Player_NominationDelay[MAXPLAYERS+1];
 int g_NominationDelay;
 
-Handle g_Cvar_SteamGroupID = INVALID_HANDLE;
-
 public void OnPluginStart()
 {
 	LoadTranslations("common.phrases");
@@ -98,7 +96,6 @@ public void OnPluginStart()
 	g_Cvar_ExcludeCurrent = CreateConVar("sm_nominate_excludecurrent", "1", "Specifies if the MapChooser excluded maps should also be excluded from Nominations", 0, true, 0.00, true, 1.0);
 	g_Cvar_InitialDelay = CreateConVar("sm_nominate_initialdelay", "60.0", "Time in seconds before first Nomination can be made", 0, true, 0.00);
 	g_Cvar_NominateDelay = CreateConVar("sm_nominate_delay", "3.0", "Delay between nominations", 0, true, 0.00, true, 60.00);
-	g_Cvar_SteamGroupID = CreateConVar("sm_nominte_steamid", "103582791465893760", "Steam Group ID 64");
 
 	RegConsoleCmd("say", Command_Say);
 	RegConsoleCmd("say_team", Command_Say);
@@ -761,7 +758,7 @@ public int Handler_MapSelectMenu(Menu menu, MenuAction action, int param1, int p
 				return ITEMDRAW_DEFAULT;
 			}
 
-			if(((status & MAPSTATUS_DISABLED) == MAPSTATUS_DISABLED) && !IsClientAdmin(param1))
+			if((status & MAPSTATUS_DISABLED) == MAPSTATUS_DISABLED)
 				return ITEMDRAW_DISABLED;
 
 			if((GetMapTimeRestriction(map) || GetMapPlayerRestriction(map) || GetMapGroupRestriction(map, param1) >= 0) && !IsClientAdmin(param1))
@@ -841,7 +838,7 @@ public int Handler_MapSelectMenu(Menu menu, MenuAction action, int param1, int p
 			int PlayerRestriction = GetMapPlayerRestriction(map);
 			int GroupRestriction = GetMapGroupRestriction(map, param1);
 			
-			if(GetMapVIPOnly(map) && IsClientVIP(param1))
+			if(GetMapVIPOnly(map))
 			{
 				if (TimeRestriction)
 				{
@@ -865,37 +862,7 @@ public int Handler_MapSelectMenu(Menu menu, MenuAction action, int param1, int p
 				return RedrawMenuItem(display);
 			}
 
-			if(GetMapVIPOnly(map) && !IsClientVIP(param1))
-			{
-				if (TimeRestriction)
-				{
-					Format(display, sizeof(display), "%s (%T)(★VIP★)", buffer, "Map Time Restriction", param1, "+", RoundToFloor(float(TimeRestriction / 60)), TimeRestriction % 60);
-					return RedrawMenuItem(display);
-				}
-				if (PlayerRestriction)
-				{
-					if(PlayerRestriction < 0)
-						Format(display, sizeof(display), "%s (%T)(★VIP★)", buffer, "Map Player Restriction", param1, "+", PlayerRestriction * -1);
-					else
-						Format(display, sizeof(display), "%s (%T)(★VIP★)", buffer, "Map Player Restriction", param1, "-", PlayerRestriction);
-				}
-				if(GroupRestriction >= 0)
-				{
-					Format(display, sizeof(display), "%s (%T)(★VIP★)", buffer, "Map Group Restriction", param1, GroupRestriction);
-					return RedrawMenuItem(display);
-				}
-				
-				Format(display, sizeof(display), "%s (VIP Only)", buffer);
-				return RedrawMenuItem(display);
-			}
-
-			if(GetMapAdminOnly(map) && IsClientAdmin(param1))				
-			{
-				Format(display, sizeof(display), "%s (★Admin★)", buffer);
-				return RedrawMenuItem(display);
-			}
-
-			if(GetMapAdminOnly(map) && !IsClientAdmin(param1))
+			if(GetMapAdminOnly(map))
 			{
 				if (TimeRestriction)
 				{
@@ -915,7 +882,7 @@ public int Handler_MapSelectMenu(Menu menu, MenuAction action, int param1, int p
 					return RedrawMenuItem(display);
 				}
 				
-				Format(display, sizeof(display), "%s (Admin Only)", buffer);
+				Format(display, sizeof(display), "%s (★Admin★)", buffer);
 				return RedrawMenuItem(display);
 			}
 
