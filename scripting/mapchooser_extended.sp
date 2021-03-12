@@ -60,6 +60,8 @@
 #define MCE_VERSION "1.14.0"
 #define NV "nativevotes"
 
+//define GRP_COOLDOWN
+
 enum RoundCounting
 {
 	RoundCounting_Standard = 0,
@@ -553,6 +555,12 @@ public void OnMapEnd()
 			g_OldMapList.Remove(map);
 	}
 	InternalStoreMapCooldowns();
+	
+	#if defined GRP_COOLDOWN
+	int Cooldown = InternalGetMapCooldown(map);
+	SetMapCooldownGroup(map);
+	#endif
+	
 	delete OldMapListSnapshot;
 }
 
@@ -2789,3 +2797,60 @@ stock bool InternalGetMapNominateOnly(const char[] map)
 	}
 	return false;
 }
+
+//Map group exclude experimental
+
+#if defined GRP_COOLDOWN
+stock void SetMapCooldownGroup(const char[] map)
+{
+    int groups[32];
+    int groupsfound = InternalGetMapGroups(map, groups, sizeof(groups));
+    for(int group = 0; group < groupsfound; group ++)
+    {
+        int iCDMapGroup = InternalGetGroupCooldown(groups[group]);
+        if(iCDMapGroup>0)
+        {
+            SetMapsGroupCooldown(groups[group],iCDMapGroup);
+        }
+    }
+}
+
+stock void SetMapsGroupCooldown(int group, int cooldown)
+{
+    char groupstr[8];
+    IntToString(group, groupstr, sizeof(groupstr));
+    char map[PLATFORM_MAX_PATH];
+    if(g_Config && g_Config.JumpToKey("_groups"))
+    {
+        if(g_Config.JumpToKey(groupstr, false))
+        {
+            do
+            {
+                g_Config.GetSectionName(mapname, sizeof(mapname));
+                g_OldMapList.SetValue(map, cooldown, true);
+            }while (g_Config.GotoNextKey());
+        }
+
+        g_Config.Rewind();
+    }
+}
+
+stock int InternalGetGroupCooldown(int group)
+{
+    char groupstr[8];
+    IntToString(group, groupstr, sizeof(groupstr));
+    if(g_Config && g_Config.JumpToKey("_groups"))
+    {
+        if(g_Config.JumpToKey(groupstr, false))
+        {
+            int iCD = g_Config.GetNum("Cooldown", -1);
+            g_Config.Rewind();
+            return iCD;
+        }
+
+        g_Config.Rewind();
+    }
+
+    return -1;
+}
+#endif
