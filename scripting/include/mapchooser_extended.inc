@@ -112,10 +112,9 @@ native int GetMapMinTime(const char[] map);
 native int GetMapMaxTime(const char[] map);
 native int GetMapMinPlayers(const char[] map);
 native int GetMapMaxPlayers(const char[] map);
-native int GetMapAdminOnly(const char[] map);
-native int GetMapVIPOnly(const char[] map);
-native int GetMapNominateOnly(const char[] map);
-native bool GetMapIsNew(const char[] map);
+native bool GetMapAdminOnly(const char[] map);
+native bool GetMapVIPOnly(const char[] map);
+native bool GetMapNominateOnly(const char[] map);
 
 // 0 = Okay
 // >0 = Minutes till Okay

@@ -1700,7 +1700,7 @@ void CreateNextVote()
 			if(InternalGetMapPlayerRestriction(map) != 0)
 				continue;
 			
-			if(InternalGetMapNominateOnly(map) != 0)
+			if(InternalGetMapNominateOnly(map))
 				continue;
 
 			bool okay = true;
@@ -2737,41 +2737,55 @@ public int Native_GetMapNominateOnly(Handle plugin, int numParams)
 	return InternalGetMapNominateOnly(map);
 }
 
-stock int InternalGetMapAdminOnly(const char[] map)
+stock bool InternalGetMapAdminOnly(const char[] map)
 {
 	int AdminOnly = 0;
 
 	if(g_Config && g_Config.JumpToKey(map))
 	{
-		AdminOnly = g_Config.GetNum("AdminOnly", AdminOnly);
+		AdminOnly = g_Config.GetNum("AdminOnly", -1);
 		g_Config.Rewind();
+		
+		if(AdminOnly >= 1)
+		{
+			return true;
+		}
 	}
 
-	return AdminOnly;
+	return false;
 }
 
-stock int InternalGetMapVIPOnly(const char[] map)
+stock bool InternalGetMapVIPOnly(const char[] map)
 {
 	int VIPOnly = 0;
 
 	if(g_Config && g_Config.JumpToKey(map))
 	{
-		VIPOnly = g_Config.GetNum("VIPOnly", VIPOnly);
+		VIPOnly = g_Config.GetNum("VIPOnly", -1);
 		g_Config.Rewind();
+		
+		if(VIPOnly >= 1)
+		{
+			return true;
+		}
 	}
 
-	return VIPOnly;
+	return false;
 }
 
-stock int InternalGetMapNominateOnly(const char[] map)
+stock bool InternalGetMapNominateOnly(const char[] map)
 {
 	int NominateOnly = 0;
 
 	if(g_Config && g_Config.JumpToKey(map))
 	{
-		NominateOnly = g_Config.GetNum("NominateOnly", NominateOnly);
+		NominateOnly = g_Config.GetNum("NominateOnly", -1);
 		g_Config.Rewind();
+		
+		if(NominateOnly >= 1)
+		{
+			return true;
+		}
 	}
-
-	return NominateOnly;
+	return false;
 }
