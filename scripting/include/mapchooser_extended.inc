@@ -115,24 +115,7 @@ native int GetMapMaxPlayers(const char[] map);
 native int GetMapAdminOnly(const char[] map);
 native int GetMapVIPOnly(const char[] map);
 native int GetMapNominateOnly(const char[] map);
-
-stock bool IsClientVIP(int client)
-{
-	char sClientFlag[16];
-	Format(sClientFlag, sizeof(sClientFlag), "a");
-	
-	int flag = ReadFlagString(sClientFlag);
-	if (GetUserFlagBits(client) & flag == flag)
-	{
-		return true;
-	}
-	return false;
-}
-
-stock bool IsClientAdmin(int client)
-{
-	return CheckCommandAccess(client, "sm_map", ADMFLAG_CHANGEMAP, false);
-}
+native bool GetMapIsNew(const char[] map);
 
 // 0 = Okay
 // >0 = Minutes till Okay

@@ -77,6 +77,7 @@ Handle g_mapTrie;
 Handle g_Cvar_MarkCustomMaps = INVALID_HANDLE;
 Handle g_Cvar_NominateDelay = INVALID_HANDLE;
 Handle g_Cvar_InitialDelay = INVALID_HANDLE;
+Handle g_Cvar_VIPFlag = INVALID_HANDLE;
 
 int g_Player_NominationDelay[MAXPLAYERS+1];
 int g_NominationDelay;
@@ -96,6 +97,7 @@ public void OnPluginStart()
 	g_Cvar_ExcludeCurrent = CreateConVar("sm_nominate_excludecurrent", "1", "Specifies if the MapChooser excluded maps should also be excluded from Nominations", 0, true, 0.00, true, 1.0);
 	g_Cvar_InitialDelay = CreateConVar("sm_nominate_initialdelay", "60.0", "Time in seconds before first Nomination can be made", 0, true, 0.00);
 	g_Cvar_NominateDelay = CreateConVar("sm_nominate_delay", "3.0", "Delay between nominations", 0, true, 0.00, true, 60.00);
+	g_Cvar_VIPFlag = CreateConVar("sm_nominate_vip_flag", "a", "Specific VIP Flag");
 
 	RegConsoleCmd("say", Command_Say);
 	RegConsoleCmd("say_team", Command_Say);
@@ -1161,4 +1163,21 @@ public int Native_RemoveMapsFromNominationPool(Handle plugin, int numArgs)
 	UpdateMapMenus();
 
 	return 0;
+}
+
+stock bool IsClientVIP(int client)
+{
+	char sClientFlag[16];
+	GetConVarString(g_Cvar_VIPFlag, sClientFlag, sizeof(sClientFlag));
+
+	if (GetUserFlagBits(client) & ReadFlagString(sClientFlag))
+	{
+		return true;
+	}
+	return false;
+}
+
+stock bool IsClientAdmin(int client)
+{
+	return CheckCommandAccess(client, "sm_map", ADMFLAG_CHANGEMAP, false);
 }
